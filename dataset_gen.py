@@ -7,6 +7,7 @@ import os
 
 DIR_PATH = './dm_stories_tokenized/'
 english_stopwords = set(stopwords.words('english'))
+N_TOP_WORDS = 100
 
 if __name__ == "__main__":
 	stories = []
@@ -50,8 +51,8 @@ if __name__ == "__main__":
 
 	w_z = lda.components_ / lda.components_.sum(axis=1)[:, np.newaxis]
 
-	top_word_args = np.argsort(w_z, axis=1)[:,-1*5:]
-	top_words = np.chararray((w_z.shape[0], 5, 2), itemsize=100)
+	top_word_args = np.argsort(w_z, axis=1)[:,-1*N_TOP_WORDS:]
+	top_words = np.chararray((w_z.shape[0], N_TOP_WORDS, 2), itemsize=100)
 	for i in range(len(input_files)):
 	    top_words[i,:,0] = index_to_word[top_word_args[i]]
 	    top_words[i,:,1] = w_z[i,top_word_args[i]]
