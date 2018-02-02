@@ -59,7 +59,7 @@ if __name__ == "__main__":
 		topic_index = most_likely_topics[i]
 		word_dist = topic_dist[topic_index,:]
 		word_probs = word_vec.dot(word_dist[:,np.newaxis])
-		df.loc[i, 'dists'] = np.log(word_probs).reshape(word_probs.shape[0]).tolist()[0]
+		df.loc[i, 'dists'] = ' '.join([str(prob) for prob in np.log(word_probs).reshape(word_probs.shape[0]).tolist()[0]])
 
 	df.dropna(axis=0, how='any', inplace=True)
 	df.to_csv('data.csv', index=False)
