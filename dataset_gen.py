@@ -45,23 +45,18 @@ if __name__ == "__main__":
 	sen_topics = lda.transform(vec_sentences)
 	most_likely_topics = np.argmax(sen_topics, axis=1)
 
-	tokenized_sentences = [sentence.split(" ") for sentence in sentences]
-	df = pd.DataFrame(columns=['sentences'])
+	df = pd.DataFrame(columns=['sentences', 'dists'])
 	df['sentences'] = sentences
 
 	word_dists = []
-	for i, token_sentence in enumerate(tokenized_sentences):
+	for i, sentence in enumerate(sentences):
+		if sentence.strip() == '':
+			continue
 		if (i % 100 == 0):
 			print("Finished: " + str(i))
-		if (''.join(token_sentence).strip() == ''):
-			continue
-		word_vec = vectorizer.transform(token_sentence).todense()
 		topic_index = most_likely_topics[i]
 		word_dist = topic_dist[topic_index,:]
-		word_probs = word_vec.dot(word_dist[:,np.newaxis])
-		df.loc[i, 'dists'] = ' '.join([str(prob) for prob in np.log(word_probs).reshape(word_probs.shape[0]).tolist()[0]])
-
-	# df = pd.concat([df, pd.DataFrame(lda.transform(vec_sentences))], axis=1)
+		df.loc[i, 'dists'] = ' '.join([str(prob) for prob in word_dist])
 
 	df.dropna(axis=0, how='any', inplace=True)
 	df.to_csv('data.csv', index=False)
